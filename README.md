@@ -10,8 +10,6 @@ Dự án xây dựng pipeline ETL end-to-end xử lý dữ liệu log hành vi n
 WebCRM/
 ├── ETL_log_content.py       # ETL pipeline xử lý log xem nội dung
 ├── ETL_log_search.py        # ETL pipeline xử lý log tìm kiếm
-├── count_raw_rows_content.py
-├── count_raw_rows_search.py
 ├── log_content/             # Dữ liệu thô (ignored by git)
 ├── log_search/              # Dữ liệu thô (ignored by git)
 └── web_dashboard/           # Next.js analytics dashboard
