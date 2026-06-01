@@ -1,0 +1,15 @@
+# Dữ liệu thô log (không push lên GitHub)
+log_content/
+log_search/
+
+#File đếm dữ liệu
+count_raw_rows_content.py
+count_raw_rows_search.py
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Spark temp
+spark-warehouse/
