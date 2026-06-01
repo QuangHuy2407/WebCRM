@@ -154,7 +154,7 @@ def import_to_local_db(df, table_name):
     password = "huytit2004"          # ← đổi nếu password khác
     url      = f"jdbc:postgresql://{host}:{port}/{database}"
 
-    print(f"📤 Đang đẩy dữ liệu vào {table_name} (local PostgreSQL)...")
+    print(f"Đang đẩy dữ liệu vào {table_name} (local PostgreSQL)...")
 
     df.write.format("jdbc") \
         .option("url",      url) \
@@ -170,7 +170,7 @@ def import_to_local_db(df, table_name):
 
 def main_task(path, start_str, end_str):
     start_time = time.time()
-    print(f"🚀 Khởi động ETL log_search: {start_str} → {end_str}")
+    print(f"Khoi dong ETL log_search: {start_str} -> {end_str}")
 
     if not os.path.exists(r"D:\spark_temp"):
         os.makedirs(r"D:\spark_temp")
@@ -191,39 +191,39 @@ def main_task(path, start_str, end_str):
                            .withColumn("Date", F.lit(date_str))
             full_df = day_df if full_df is None else full_df.union(day_df)
             count_folders += 1
-            print(f"  ✅ Đọc folder: {date_str}")
+            print(f"  [OK] Doc folder: {date_str}")
 
         current_date += timedelta(days=1)
 
     if full_df is None:
-        print("❌ Không tìm thấy dữ liệu.")
+        print("Khong tim thay du lieu.")
         return
 
-    print(f"\n📂 Đã đọc {count_folders} folders")
+    print(f"\nDa doc {count_folders} folders")
 
     # Lọc bỏ user_id null / rỗng
     full_df = full_df.filter(
         F.col("user_id").isNotNull() & (F.col("user_id") != "")
     )
 
-    print("🔤 Đang phân loại keyword...")
+    print("Dang phan loai keyword...")
     full_df = classify_keyword(full_df)
 
-    print("📋 Đang trích xuất gói cước...")
+    print("Dang trich xuat goi cuoc...")
     df_plan = extract_plan(full_df)
 
-    print("🔄 Đang tính toán chỉ số...")
+    print("Dang tinh toan chi so...")
     result_df = calculate_search_stats(full_df, df_plan)
 
     try:
         import_to_local_db(result_df, "customer_search_stats")
-        print("✅ Dữ liệu đã được đẩy vào PostgreSQL local thành công!")
+        print("Du lieu da duoc day vao PostgreSQL local thanh cong!")
     except Exception as e:
-        print(f"❌ Lỗi Database: {e}")
+        print(f"Loi Database: {e}")
 
     print("\n" + "=" * 40)
-    print(f"🏁 HOÀN THÀNH JOB")
-    print(f"⏱️  Tổng thời gian: {time.time() - start_time:.2f} giây")
+    print(f"HOAN THANH JOB")
+    print(f"Tong thoi gian: {time.time() - start_time:.2f} giay")
     print("=" * 40)
 
     result_df.show(5)

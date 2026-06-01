@@ -83,7 +83,7 @@ def import_to_local_db(df, table_name):
     password = "huytit2004"
     url      = f"jdbc:postgresql://{host}:{port}/{database}"
 
-    print(f"📤 Đang đẩy dữ liệu vào {table_name} (local PostgreSQL - {database})...")
+    print(f"Đang đẩy dữ liệu vào {table_name} (local PostgreSQL - {database})...")
 
     df.write.format('jdbc') \
         .option('url',      url) \
@@ -109,11 +109,11 @@ def main_task(path):
     ])
 
     if not json_files:
-        print("❌ Không tìm thấy file JSON nào trong thư mục.")
+        print("Khong tim thay file JSON nao trong thu muc.")
         return
 
-    print(f"🚀 Khởi động ETL log_content — tìm thấy {len(json_files)} file")
-    print(f"   Từ {json_files[0]} đến {json_files[-1]}")
+    print(f"Khoi dong ETL log_content --- tim thay {len(json_files)} file")
+    print(f"   Tu {json_files[0]} den {json_files[-1]}")
 
     full_df    = None
     count_files = 0
@@ -126,16 +126,16 @@ def main_task(path):
                           .withColumn("Date", F.lit(date_str))
             full_df = day_df if full_df is None else full_df.union(day_df)
             count_files += 1
-            print(f"  ✅ Đọc file: {fname}")
+            print(f"  [OK] Doc file: {fname}")
         except Exception as e:
-            print(f"  ⚠️  Bỏ qua {fname}: {e}")
+            print(f"  [WARN] Bo qua {fname}: {e}")
 
     if full_df is None:
-        print("❌ Không đọc được dữ liệu.")
+        print("Khong doc duoc du lieu.")
         return
 
-    print(f"\n📂 Đã đọc {count_files} / {len(json_files)} file")
-    print("🔄 Đang biến đổi dữ liệu...")
+    print(f"\nDa doc {count_files} / {len(json_files)} file")
+    print("Dang bien doi du lieu...")
     full_df = category_app_name(full_df)
 
     # Ngưỡng Active: tuần (<=7 ngày) → 4, tháng (>7 ngày) → 15
@@ -144,13 +144,13 @@ def main_task(path):
 
     try:
         import_to_local_db(result_df, "customer_content_stats")
-        print("✅ Dữ liệu đã được đẩy vào PostgreSQL local thành công!")
+        print("Du lieu da duoc day vao PostgreSQL local thanh cong!")
     except Exception as e:
-        print(f"❌ Lỗi Database: {e}")
+        print(f"Loi Database: {e}")
 
     print("\n" + "="*40)
-    print(f"🏁 HOÀN THÀNH JOB")
-    print(f"⏱️  Tổng thời gian: {time.time() - start_time:.2f} giây")
+    print(f"HOAN THANH JOB")
+    print(f"Tong thoi gian: {time.time() - start_time:.2f} giay")
     print("="*40)
 
     result_df.show(5)
