@@ -41,6 +41,7 @@ WebCRM/
 ---
 
 ## 🔄 Pipeline ETL
+Lấy dữ liệu log trên Azure Datalake bằng Pyspark
 
 ### 1. `ETL_log_content.py` → `logcontentdb.customer_content_stats`
 
